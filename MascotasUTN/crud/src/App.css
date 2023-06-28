@@ -1,0 +1,35 @@
+img{
+  width: 300px;
+  height: auto;
+}
+header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color:coral;
+  padding: 30px;
+}
+
+.container{
+  width: 1500px;
+  margin: auto;
+}
+.button{
+  margin: 10px;
+  background-color: rgb(201, 199, 199);
+  color: black;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none;
+
+}
+.input{
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  color: rgb(71, 77, 77);
+  margin: 10px;
+
+}
