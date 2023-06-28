@@ -18,32 +18,26 @@ const Formulario = () => {
   const { nombre, edad, tipo, vacunado, observaciones } = form;
   const [error, setError] = useState(false)
   const { id } = useParams()
-
-  const stateForm = () => {
-    //condicional del parámetro que captura el id del objeto
-    if (id) {
-      //Busca dentro del array de mascotas el objeto en común 
-      const mascotaEncontrada = mascotas.find(m => m._id === id)
-      //si está vacio el formulario me envía los datos al formulario
-      if ((form.nombre === "")) {
-        setForm({ ...form, ...mascotaEncontrada })
-      }
-    }
-    else {
-      //si no encuentra el parámetro id se inicia el formulario vacío
-      handleReset()
-    }
-  }
+    
   useEffect(() => {
     //ejecuta la funcion del estado del formulario
-    stateForm()
-  })
+    if (id) {
+      const mascotaEncontrada = mascotas.find(m => m._id === id)
+      setForm({ ...form, ...mascotaEncontrada })   
+     // console.log(form);
+    }
+    else {
+    
+      handleReset()
+    }
+  },[id])
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!nombre.trim() === "" ||
       !edad.trim() ||
-      !tipo === "Tipo" ||
+      !tipo.trim() === "Seleccione" ||
       !observaciones.trim() === ""
     ) {
       setError(true)
