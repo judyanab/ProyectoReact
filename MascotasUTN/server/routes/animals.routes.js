@@ -1,22 +1,24 @@
 //sirve para hacer rutas 
 const express = require('express');
-const router = express.Router();
-
+const animalRouter = express.Router();
+const jwt = require('jsonwebtoken');
 //modelos de esquema de cada collecion dentro de mi base de datos
 const Animal = require('../models/animal');
-const Type = require('../models/types')
+const Type = require('../models/types');
+const {SECRET} = require("../utils/config");
+const { verifyToken } = require('../utils/middlewares');
 
-router.get('/tipos', async (req, res) => {
+animalRouter.get('/tipos',verifyToken, async (req, res, next) => {
     try {
         const types = await Type.find({})
         res.send(types)
     }
-    catch (error) {
-        res.status(500).json({ error: 'Error al obtener los tipos de mascotas' });
+    catch (err) {
+        next(err);
     }
 });
 
-router.post("/tipos", async (req, res) => {
+animalRouter.post("/tipos",verifyToken, async (req, res, next) => {
     try {
         const { id, descripcion } = req.body
         const type = new Type({ id, descripcion })
@@ -24,49 +26,47 @@ router.post("/tipos", async (req, res) => {
         res.send(type)
         res.json("recibido")
     }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al crear un tipo' });
+    catch (err) {
+        console.error(err);
+        next(err);
     }
 })
 
-router.get('/', async (req, res) => {
+animalRouter.get('/',verifyToken, async (req, res, next) => {
     try {
         const Animals = await Animal.find({})
         res.send(Animals)
     }
-    catch (error) {
-        res.status(500).json({ error: 'Error al obtener la mascota' });
+    catch (err) {
+        next(err);
     }
 });
 
-router.post("/", async (req, res) => {
+animalRouter.post("/",verifyToken, async (req, res, next) => {
     try {
         const { nombre, edad, tipo, vacunado, observaciones } = req.body
         const animal = new Animal({ nombre, edad, tipo, vacunado, observaciones })
         await animal.save()
         res.json(animal)
     }
-    catch (error) {
-        res.status(500).json({ error: 'Error al agregar las mascotas' });
+    catch (err) {
+        next(err);
     }
 })
 
 
-router.get('/:id', async (req, res) => {
+animalRouter.get('/:id',verifyToken, async (req, res, next) => {
     try {
         const Animals = await Animal.findById(req.params.id)
         res.send(Animals)
     }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener la mascota' });
+    catch (err) {
+        console.error(err);
+        next(err);
     }
 });
 
-
-
-router.put('/:id', async (req, res) => {
+animalRouter.put('/:id',verifyToken, async (req, res, next) => {
     try {
         const { id } = req.params;
         const { nombre, edad, tipo, vacunado, observaciones } = req.body;
@@ -76,24 +76,24 @@ router.put('/:id', async (req, res) => {
             { new: true }
         );
         if (!updatedAnimal) {
-            return res.status(404).json({ error: 'Animal no encontrado' });
+            return  next(err);
         }
         res.json(updatedAnimal);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al actualizar el animal' });
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 });
 
-router.delete("/:id", async (req, res) => {
+animalRouter.delete("/:id",verifyToken, async (req, res, next) => {
     try {
         const deleteAnimal = await Animal.findByIdAndRemove(req.params.id)
         res.send(deleteAnimal)
     }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al eliminar la mascota' });
+    catch (err) {
+        
+        next(err);
     }
 })
 
-module.exports = router;
+module.exports = animalRouter;

@@ -1,33 +1,39 @@
 //sirve para hacer rutas 
 const express = require('express');
-const router = express.Router();
+const loginRouter = express.Router();
 const bcrypt = require("bcrypt")
 //modelos de esquema de cada collecion dentro de mi base de datos
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const {SECRET} = require("../utils/config");
 
-router.post("/api/login", async (req, res) => {
+loginRouter.post("/api/login", async(req , resp, next)=>{
+
     try {
-        const { userName, password } = req.body;
-        const user = await User.findOne({userName}) // busco el primer usuario
-        const correctPassword = user===null?false: await bcrypt.compare(password,user.passwordHash)
-        if (user && correctPassword){
+        const {userName, password} = req.body;
+        const user = await User.findOne({userName});
         const userToken = {
             userName: user.userName,
-            id: user._id
-        };
-        const token = await jwt.sign(userToken,SECRET)
-        res.json({token,userName})
+            id: user._id,
+        }
+        //console.log(user)
+        const correctPass = 
+        user === null? false : await bcrypt.compare(password, user.passwordHash);
+        if(!(user&&correctPass)){
+            return next({name: "ValidationError", message: "Usuario o Pass incorrecto"})
+        }
+        // const token = await jwt.sign(userToken, SECRET, {expiresIn: "60s"});
+        const token = await jwt.sign(userToken, SECRET);
+
+        resp.status(200).json({
+            token,
+            userName
+        })    
+        
+    } catch (error) {
+        next(error);
     }
-    else{
-        res.status(401).json({ error: 'Credenciales inválidas' });
-    }
-    }
-    catch (error) {
-        res.status(500).json({ error: 'Error al obtener el usuario' });
-    }
+
 })
 
-
-module.exports = router;
+module.exports = loginRouter;

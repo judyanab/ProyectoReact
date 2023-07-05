@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt")
 //modelos de esquema de cada collecion dentro de mi base de datos
 const User = require('../models/User');
 const { SECRET } = require("../utils/config")
+
 router.get('/api/user', async (req, res) => {
     try {
         const Users = await User.find({})
@@ -34,25 +35,26 @@ router.post("/api/user", async (req, res) => {
 })
 
 
-router.get('/:id', async (req, res) => {
+router.get('/api/user/:id', async (req, res) => {
     try {
         const Users = await User.findById(req.params.id)
         res.send(Users)
+      
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al obtener la mascota' });
+        res.status(500).json({ error: 'Error al obtener usuario' });
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/api/user/:id", async (req, res) => {
     try {
         const deleteUser = await User.findByIdAndRemove(req.params.id)
         res.send(deleteUser)
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al eliminar la mascota' });
+        res.status(500).json({ error: 'Error al eliminar' });
     }
 })
 

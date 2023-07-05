@@ -4,13 +4,11 @@ const app = express();
 const morgan = require('morgan');
 const path = require('path');
 const { mongoose } = require('./utils/database')
+const {handlerError, handler404, verifyToken} = require('./utils/middlewares');
 const cors = require("cors")
 
 //configuracion
 app.set('port', PORT)
-
-//middlewares
-
 //morgan registra la informacion de solicitudes HTTP
 app.use(morgan('dev'))
 
@@ -24,6 +22,8 @@ app.use(cors())
 app.use('/', require('./routes/animals.routes'))
 app.use('/', require('./routes/user.routes'))
 app.use('/', require('./routes/login.routes'))
+app.use(handlerError)
+app.use(handler404)
 
 //iniciar el servidor
 app.listen(app.get('port'), () => {
