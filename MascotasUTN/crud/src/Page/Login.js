@@ -1,12 +1,13 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import { useHistory } from 'react-router-dom';
 import { PetsContext } from '../context/PetsContext';
 
-
 const Login = () => {
-    const { setUser } = useContext(PetsContext)
+    const { setUser, user } = useContext(PetsContext)
     const [log, setLog] = useState(true)
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
+    const history = useHistory()
     const inicioDeSesion = async (e) => {
         e.preventDefault()
         fetch(process.env.REACT_APP_API_MAINPATH_LOGIN, {
@@ -19,7 +20,8 @@ const Login = () => {
             .then((response) => {
                 if (response.ok) {
                     return response.json();
-                } else {
+                }
+                else {
                     alert("el usuario y/o contraseña es incorrecto, por favor intentalo de nuevo")
                     setUserName("")
                     setPassword("")
@@ -61,6 +63,10 @@ const Login = () => {
             alert("los campos no deben estar vacios y tu contraseña debe tener 8 o más caracteres")
         }
     }
+    useEffect(() => {
+        if (localStorage.getItem("token") !== null) { history.push("/home") }
+        console.log(user)
+    }, [user, history])
     return (
         <>{log ?
             <>

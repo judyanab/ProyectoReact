@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import HomePage from './Page/HomePage';
+import Login from './Page/Login';
 import DetallePage from './Page/DetallePage';
 import Error404 from './Page/Error404';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -12,7 +13,8 @@ function App() {
     <PetsContextProvider>
         <Router>
           <Switch>
-            <Route exact path="/" component={HomePage}/>
+            <Route exact path="/" component={Login}/>
+            <Route exact path="/home" component={HomePage}/>
             <Route path="/update/:id" component={HomePage}/>
             <Route path="/detail/:id" component={DetallePage}/>
             <Route path="*" component={Error404} />

@@ -1,29 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect,useContext } from 'react'
+import { PetsContext } from '../context/PetsContext'
 
 const Select = ({ handleChange, tipoActual }) => {
 
-  const [tipos, setTipos] = useState([])
-  const URL = "http://localhost:8000/tipos"
+  const {getTypes,tipos}=useContext(PetsContext)
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(URL);
-        const data = await response.json();
-        await setTipos(data);
-      } catch (error) {
-        console.error('Error al obtener los tipos:', error);
-      }
-    };
-    fetchData();
+    getTypes()
   }, []);
   return (
     <select name='tipo' onChange={handleChange} value={tipoActual}>
-    {tipos.map((tipo) => (
-      <option key={tipo._id} value={tipo.descripcion}>
-        {tipo.descripcion}
-      </option>
-    ))}
-  </select>
+      {tipos.map((tipo) => (
+        <option key={tipo._id} value={tipo.descripcion}>
+          {tipo.descripcion}
+        </option>
+      ))}
+    </select>
 
   )
 }

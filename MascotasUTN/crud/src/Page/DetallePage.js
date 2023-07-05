@@ -1,13 +1,19 @@
 import React, { useEffect, useContext } from 'react'
 import Loader from '../components/Loader';
 import { PetsContext } from '../context/PetsContext';
-import { useParams } from 'react-router-dom'
+import { useParams,useHistory } from 'react-router-dom'
 const DetallePage = () => {
   const { getDetailMascota, URLPETS, mascota } = useContext(PetsContext)
   const { id } = useParams()
+  const history= useHistory()
   useEffect(() => {
-    getDetailMascota(URLPETS, id)
-  }, [])
+    if(localStorage.getItem("token")!==null){
+      getDetailMascota(URLPETS, id)
+      }
+    else{
+     history.push("/")
+    }
+  }, [localStorage,id])
   return (
     <>
       <h1>detalle</h1>

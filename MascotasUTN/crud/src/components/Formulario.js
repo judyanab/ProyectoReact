@@ -18,44 +18,48 @@ const Formulario = () => {
   const { nombre, edad, tipo, vacunado, observaciones } = form;
   const [error, setError] = useState(false)
   const { id } = useParams()
-    
-  useEffect(() => {
-    //ejecuta la funcion del estado del formulario
+
+  const stateForm = () => {
+    //condicional del parámetro que captura el id del objeto
     if (id) {
+      //Busca dentro del array de mascotas el objeto en común 
       const mascotaEncontrada = mascotas.find(m => m._id === id)
-      setForm({ ...form, ...mascotaEncontrada })   
-     // console.log(form);
+      //si está vacio el formulario me envía los datos al formulario
+      if ((form.nombre === "")) {
+        setForm({ ...form, ...mascotaEncontrada })
+      }
     }
     else {
-    
+      //si no encuentra el parámetro id se inicia el formulario vacío
       handleReset()
     }
-  },[id])
-  
+  }
+  useEffect(() => {
+    //ejecuta la funcion del estado del formulario
+    stateForm()
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!nombre.trim() === "" ||
-      !edad.trim() ||
-      !tipo.trim() === "Seleccione" ||
+      !edad.trim() ||!tipo === "Tipo"||
+      !tipo ||
       !observaciones.trim() === ""
     ) {
       setError(true)
-      console.log(tipo)
-      return;
     }
     else {
       setError(false) // vuelvo al estado original el campo error por si una vez entra al if cambia el estado lo vuelvo al estado original
       const newMascota = { ...form }
-      if (id) {
-        const findMascota = mascotas.find(m => m._id === id)
-        setMascotas(mascotas => mascotas.map(m => m._id === id ? findMascota : m))
-        updateMascota(URLPETS, { ...findMascota, ...newMascota })
-      }
-      else {
-        createMascota(newMascota, URLPETS)
-        setForm(inicialForm)
-      }
+        if (id) {
+          const findMascota = mascotas.find(m => m._id === id)
+          setMascotas(mascotas => mascotas.map(m => m._id === id ? findMascota : m))
+          updateMascota(URLPETS, { ...findMascota, ...newMascota })
+        }
+        else {
+          createMascota(newMascota, URLPETS)
+          setForm(inicialForm)
+        }
     };
   }
 
